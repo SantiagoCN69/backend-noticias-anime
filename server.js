@@ -17,6 +17,27 @@ app.get('/api/noticias', async (req, res) => {
   }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+
+app.get('/api/imagen-base64', async (req, res) => {
+  const imageUrl = req.query.url;
+  if (!imageUrl) return res.status(400).json({ error: 'Falta la URL de la imagen' });
+
+  try {
+    const response = await axios.get(imageUrl, {
+      responseType: 'arraybuffer'
+    });
+
+    const contentType = response.headers['content-type'];
+    const base64 = Buffer.from(response.data, 'binary').toString('base64');
+    const dataUri = `data:${contentType};base64,${base64}`;
+
+    res.json({ base64: dataUri });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener o convertir la imagen' });
+  }
 });
+
+
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
+  });
