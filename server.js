@@ -41,9 +41,11 @@ app.get('/api/noticias', async (req, res) => {
       }
     });
 
+    const noticias = arrayArticulos.slice(0, 6);
+
     res.json({
-      total: arrayArticulos.length,
-      noticias: arrayArticulos
+      total: noticias.length,
+      noticias
     });
 
   } catch (error) {
